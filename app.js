@@ -90,4 +90,58 @@ if (motivoSelect) {
   });
 }
 
+// ===== AJAX Contact Form =====
+const contactForm = document.getElementById("contactForm");
+const formAlert = document.getElementById("form-alert");
+
+if (contactForm && formAlert) {
+  const submitBtn = contactForm.querySelector('button[type="submit"]');
+  const btnLabel = submitBtn ? submitBtn.querySelector('span') : null;
+
+  contactForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // loading state
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.classList.add("is-loading");
+    }
+
+    const formData = new FormData(contactForm);
+
+    try {
+      const response = await fetch("sendmail.php", {
+        method: "POST",
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        showFormAlert("¡Correo enviado! Gracias por tu interés, pronto estaremos en contacto.", "success");
+        contactForm.reset();
+      } else {
+        showFormAlert("Hubo un error al enviar el mensaje. Intenta más tarde.", "error");
+      }
+    } catch (err) {
+      showFormAlert("Error de conexión. Intenta nuevamente.", "error");
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("is-loading");
+      }
+    }
+  });
+
+  function showFormAlert(message, type) {
+    formAlert.textContent = message;
+    formAlert.className = "form-alert " + type;
+    formAlert.style.opacity = 1;
+
+    setTimeout(() => {
+      formAlert.style.opacity = 0;
+    }, 4000);
+  }
+}
+
 
