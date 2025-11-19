@@ -142,6 +142,6 @@ if (contactForm && formAlert) {
       formAlert.style.opacity = 0;
     }, 4000);
   }
-}
+} 
 
 
